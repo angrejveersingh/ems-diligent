@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ems",
-    "slug": "ems",
+    "slug": "ems-lambdadevs",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.asingh6400.emslambdadevs"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "76309550-171d-4f46-b42b-714096861358"
+      }
+    },
+    "owner": "asingh6400"
   }
 }
