@@ -60,13 +60,14 @@ const MyStack = () => {
       <Stack.Screen 
         name="Signup" 
         component={Signup} 
-        options={{ title: 'Signup' }}
+        options={{ title: 'Signup',gestureEnabled: false }}
       />       
       <Stack.Screen 
         name="Login" 
         component={Login} 
         options={
           {title: 'Login',
+          gestureEnabled: false
           }
            //{headerLeft: null}
         }
@@ -76,6 +77,7 @@ const MyStack = () => {
        component={HomeScreen} 
        options={
          {title: 'HomeScreen',
+         gestureEnabled: false,
          headerLeft: null,
          headerRight: () => (
           <Button
@@ -109,6 +111,7 @@ const MyStack = () => {
        component={Dashboard} 
        options={
          { title: 'Dashboard',
+         gestureEnabled: false,
          headerLeft: null,
          headerRight: () => (
           <Button
