@@ -4,6 +4,11 @@ import * as Location from "expo-location";
 import { SwipeListView } from "react-native-swipe-list-view";
 // import database from "@react-native-firebase/database";
 import DashboardStyle from "./DashboardStyles";
+import { useHeaderHeight } from '@react-navigation/stack';
+import KeyboardSpacer from 'react-native-keyboard-spacer'
+
+import Icon from "react-native-vector-icons/FontAwesome";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   Text,
   View,
@@ -11,11 +16,11 @@ import {
   Modal,
   ScrollView,
   Platform,
-  StyleSheet,
   Pressable,
   TouchableHighlight,
   Alert,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 
 import {
@@ -46,7 +51,7 @@ const Dashboard = ({ navigation }) => {
   const isLocationEnabled = useSelector((state) => state.ems.isLocationEnabled);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [value, setValue] = useState("");
+  const [values, setValue] = useState("");
   var date = new Date().getDate();
   var month = new Date().getMonth() + 1;
   var year = new Date().getFullYear();
@@ -131,7 +136,7 @@ const Dashboard = ({ navigation }) => {
     </View>
   );
 
-  const [locationFlag, updateLocationFlag] = useState(0);
+ 
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -182,12 +187,7 @@ const Dashboard = ({ navigation }) => {
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
 
-      // setMessage(
-      //   <View>
-      //     <Text>Latitude: {location.coords.latitude}</Text>
-      //     <Text>Longitude: {location.coords.longitude}</Text>
-      //   </View>
-      // );
+      
     } catch (error) {
       console.log("Error", error);
     }
@@ -266,7 +266,7 @@ const Dashboard = ({ navigation }) => {
         firstTask();
       }
     });
-  }, [value, finalDate, displayName, isLocationEnabled]);
+  }, [values, finalDate, displayName, isLocationEnabled]);
 
   const addNewBonsai = async () => {
     console.log("Check Location", checkData);
@@ -299,25 +299,77 @@ const Dashboard = ({ navigation }) => {
   };
 
   return (
-    <>
-      <SwipeListView
-        data={checkData}
-        renderItem={dataRender}
-        renderHiddenItem={rightButtons}
-        //leftOpenValue={0}
 
-        rightOpenValue={-70}
-        previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={3000}
-        //onRowDidOpen={onRowDidOpen}
-      />
+    <>
+     
+   
+
+
+
+
+     <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={200}
+        style={{flex:1}}
+       
+        
+     >
+
+
+
+
+
+    
 
       <View
-        //nestedScrollEnabled={true}
-        DashboardStyle={DashboardStyle.container}
-        contentContainerStyle={DashboardStyle.contentContainerStyle}
+       
+        //DashboardStyle={DashboardStyle.container}
+       // contentContainerStyle={DashboardStyle.contentContainerStyle}
       >
+
+{Platform.OS=="web" ? (
+      <>
+      { bonsaisKeys.map((key) => (
+              
+              <View style={DashboardStyle.taskDisplay} key={key}>
+                {console.log(bonsaisKeys.length)}
+                <Text key={key}>
+                  {tasks[key].time} {tasks[key].description}{" "}
+                </Text>
+                {bonsaisKeys[0] == key ? 
+                 (console.log("Hello edit",bonsaisKeys[0].key)) : (<TouchableOpacity
+                  onPress={async() => {
+                    setModalVisible(!modalVisible);
+                    updateKey(key);
+                    updateTime(tasks[key].time);
+                    updateTask(tasks[key].description)
+                    await handelMyLocation();
+                    
+                    
+                  }}
+                >
+                  <Icon name="edit" size={30} color="#900" />
+                </TouchableOpacity>) }
+                
+              </View>
+
+            ))}
+      </>
+    ):(<SwipeListView
+    style={{maxHeight:"75%"}}
+      horizontal={false}
+      nestedScrollEnabled={true}
+      data={checkData}
+      renderItem={dataRender}
+      renderHiddenItem={rightButtons}
+      //leftOpenValue={0}
+
+      rightOpenValue={-70}
+      previewRowKey={"0"}
+      previewOpenValue={-40}
+      previewOpenDelay={3000}
+      //onRowDidOpen={onRowDidOpen}
+    />)}
         <Modal
           animationType="slide"
           transparent={true}
@@ -378,21 +430,19 @@ const Dashboard = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-        <Stack m={4} spacing={2} divider={true}></Stack>
-
-        <Stack space>
-          <Surface
-            elevation={4}
-            category="medium"
-            style={DashboardStyle.container}
-          >
+        {/* <Stack m={4} spacing={2} divider={true}></Stack> */}
+       
+        
+       
+           <View 
+           style={DashboardStyle.container}>
             <TextInput
               label="New Task"
               editable
               multiline
               numberOfLines={5}
               onFocus={() => {
-                console.log("Check focus");
+                console.log("Checks focus");
               }}
               //maxLength={}
               value={currentTask}
@@ -405,6 +455,7 @@ const Dashboard = ({ navigation }) => {
               }}
               onSubmitEditing={addNewBonsai}
             />
+            
 
             <View>
               <View style={{ marginTop: 5 }}>
@@ -427,9 +478,13 @@ const Dashboard = ({ navigation }) => {
               />
             </View> */}
             </View>
-          </Surface>
-        </Stack>
+            
+         
+       
+            </View>
+        
       </View>
+      </KeyboardAvoidingView>
     </>
   );
 };
