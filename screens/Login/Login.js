@@ -1,30 +1,12 @@
 import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import {
-  auth, 
-  signInWithEmailAndPassword } from "../../firebase-config";
-
-
-  import {
-    setDisplayName
-  } from "../../components/redux/emsSlice";
-
-import { useSelector, useDispatch } from "react-redux";
-import { 
-  Text, 
-  View, 
-  StyleSheet,  
-  TextInput,
-  Button,
-  ActivityIndicator,
-  Alert,
-  Platform
- } from "react-native";
+import { auth, signInWithEmailAndPassword } from "../../firebase-config";
+import { setDisplayName } from "../../components/redux/emsSlice";
+import { useDispatch } from "react-redux";
+import { Text, View, TextInput, Button, ActivityIndicator, Alert, Image, TouchableOpacity } from "react-native";
+import LoginStyles from "./LoginStyles";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Login = ({navigation}) => {
-
-
-  //const displayName = useSelector((state) => state.ems.displayName);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
@@ -37,7 +19,6 @@ const Login = ({navigation}) => {
       setIsLoading(true);
       signInWithEmailAndPassword(auth, email, password)
       .then((res)=>{
-        //console.log(res.user.displayName);
         dispatch(setDisplayName(res.user.displayName));
         console.log('User logged in successfully');
         setIsLoading(false);
@@ -53,82 +34,57 @@ const Login = ({navigation}) => {
 
   if(isLoading){
     return(
-      <View style={styles.preloader}>
+      <View style={LoginStyles.preloader}>
         <ActivityIndicator size="large" color="#9E9E9E"/>
       </View>
     )
   }
 
   return (
-    <View style={styles.container}> 
-    
+    <View style={LoginStyles.container}> 
+      <Text 
+        style={LoginStyles.header}>
+        Don't have account? Click here to signup
+      </Text>
+      <Image
+        source={require('../../assets/diligent-logo.png')}
+        style={LoginStyles.logo}
+      />
       <TextInput
-        style={styles.inputStyle}
+        style={LoginStyles.inputStyle}
         placeholder="Email"
+        placeholderTextColor='#fff'
         value={email}
         onChangeText={(val) => setEmail(val)}
       />
       <TextInput
-        style={styles.inputStyle}
+        style={LoginStyles.inputStyle}
         placeholder="Password"
+        placeholderTextColor='#fff'
         value={password}
         onChangeText={(val) => setPassword(val)}
         maxLength={15}
         secureTextEntry={true}
       />   
       <View style={{ width:"30%", marginLeft:"35%"}}>
-      <Button
-        color="#3740FE"
+      {/* <Button
         title="Signin"
-        style={styles.button}
+        color='#fff'
+        style={LoginStyles.button}
         onPress={() => userLogin()}
-      />  
+      />   */}
+      <TouchableOpacity style={LoginStyles.button} onPress={() => userLogin()}>
+        <Text style={LoginStyles.buttonText}>Sign In</Text>
+        <Ionicons name="log-in-outline" size={18} color="#000" />
+      </TouchableOpacity>
       </View> 
       <Text 
-        style={styles.loginText}
+        style={LoginStyles.loginText}
         onPress={() => navigation.navigate('Signup')}>
         Don't have account? Click here to signup
-      </Text>                          
+      </Text>
     </View>
   );
  }
-
- const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 35,
-    backgroundColor: '#fff'
-  },
-  button:{
-    width: Platform.OS === 'web' ? "30%" : "100%",
-
-  },
-  inputStyle: {
-    width: Platform.OS === 'web' ? "30%" : "100%",
-    marginBottom: 15,
-    paddingBottom: 15,
-    alignSelf: "center",
-    borderColor: "#ccc",
-    borderBottomWidth: 1
-  },
-  loginText: {
-    color: '#3740FE',
-    marginTop: 25,
-    textAlign: 'center'
-  },
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff'
-  }
-});
 
  export default Login;
