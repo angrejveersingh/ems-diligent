@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-
+import {API_KEY,AUTH_DOMAIN,PROJECT_ID, STORAGE_BUCKET, SENDER_ID, APP_ID, MEASUR_ID} from '@env'
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { 
@@ -16,13 +16,13 @@ import 'firebase/compat/storage';
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBycWq3ciJ76ZmY7EThj8j1xya0IAxrOEk",
-  authDomain: "ems-lambdadevs.firebaseapp.com",
-  projectId: "ems-lambdadevs",
-  storageBucket: "ems-lambdadevs.appspot.com",
-  messagingSenderId: "558317824029",
-  appId: "1:558317824029:web:eef37c6bbe22318589bef4",
-  measurementId: "G-VV65YZRD0T"
+  apiKey: `${API_KEY}`,
+  authDomain: `${AUTH_DOMAIN}`,
+  projectId: `${PROJECT_ID}`,
+  storageBucket: `${STORAGE_BUCKET}`,
+  messagingSenderId: `${SENDER_ID}`,
+  appId: `${APP_ID}`,
+  measurementId: `${MEASUR_ID}`
 };
 
 

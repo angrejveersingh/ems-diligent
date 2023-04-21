@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { auth, signInWithEmailAndPassword } from "../../firebase-config";
-import { setDisplayName } from "../../components/redux/emsSlice";
+import { setDisplayName, setToken } from "../../components/redux/emsSlice";
 import { useDispatch } from "react-redux";
 import { Text, View, TextInput, Button, ActivityIndicator, Alert, Image, TouchableOpacity } from "react-native";
 import LoginStyles from "./LoginStyles";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from "@react-navigation/native";
 
-const Login = ({navigation}) => {
+const Login = ({}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const userLogin = () => {
@@ -20,11 +22,12 @@ const Login = ({navigation}) => {
       signInWithEmailAndPassword(auth, email, password)
       .then((res)=>{
         dispatch(setDisplayName(res.user.displayName));
-        console.log('User logged in successfully');
+        dispatch(setToken(res.user.stsTokenManager.accessToken));
+        console.log('User logged in successfully',res.user.stsTokenManager.accessToken);
         setIsLoading(false);
         setEmail(null);
         setPassword(null);
-        navigation.navigate('HomeScreen')
+        navigation.navigate('Home')
       })
       .catch((error)=>{
         console.error(error);
