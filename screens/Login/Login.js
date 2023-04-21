@@ -67,12 +67,6 @@ const Login = ({navigation}) => {
         secureTextEntry={true}
       />   
       <View style={{ width:"30%", marginLeft:"35%"}}>
-      {/* <Button
-        title="Signin"
-        color='#fff'
-        style={LoginStyles.button}
-        onPress={() => userLogin()}
-      />   */}
       <TouchableOpacity style={LoginStyles.button} onPress={() => userLogin()}>
         <Text style={LoginStyles.buttonText}>Sign In</Text>
         <Ionicons name="log-in-outline" size={18} color="#000" />

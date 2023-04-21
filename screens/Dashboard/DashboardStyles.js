@@ -7,11 +7,13 @@ const Dashstyle = StyleSheet.create({
     container: {
       //flex: 1,
       display: "flex",
+      flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
       padding: 50,
       //height:400,
       backgroundColor: "#fff",
+      gap: 10,
     },
     taskDisplay: {
       backgroundColor: "rgb(245, 245, 245)",
@@ -35,7 +37,7 @@ const Dashstyle = StyleSheet.create({
     },
     modalView: {
       margin: 20,
-      height:Platform.OS === "web" ? 500 : 400,
+      // height:Platform.OS === "web" ? 500 : 400,
       width:Platform.OS === "web" ? 700 : 300,
       backgroundColor: 'white',
       borderRadius: 20,
@@ -65,12 +67,9 @@ const Dashstyle = StyleSheet.create({
       color: '#FFF',
   },
   rowFront: {
-      alignItems: 'center',
-      backgroundColor: '#CCC',
-      borderBottomColor: 'black',
-      borderBottomWidth: 1,
-      justifyContent: 'center',
-      height: 50,
+      backgroundColor: '#fff',
+      borderBottomColor: '#f1f1f1',
+      borderWidth: 0.5,
   },
   rowBack: {
       alignItems: 'center',
@@ -96,6 +95,44 @@ const Dashstyle = StyleSheet.create({
       backgroundColor: 'red',
       right: 0,
   },
+  list: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: "column",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: "flex-start",
+    width: '100%',
+  },
+  listTime: {
+    width: '100%',
+    fontSize: 10,
+    textAlign: 'right',
+  },
+  inputWrap: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: "center",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#d1d1d1',
+    gap: 10,
+    width: '100%',
+  },
+  taskInput: { 
+    // width: Platform.OS === "web" ? 700 : 350, 
+    flex: 6,
+    backgroundColor: '#d1d1d1',
+    borderWidth: 0,
+    borderRadius: 50,
+  },
+  submitBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: '#000',
+    borderRadius: 50,
+  }
   });
 
   export default Dashstyle;
