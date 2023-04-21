@@ -4,11 +4,11 @@ import * as Location from "expo-location";
 import { SwipeListView } from "react-native-swipe-list-view";
 // import database from "@react-native-firebase/database";
 import DashboardStyle from "./DashboardStyles";
-import { useHeaderHeight } from '@react-navigation/stack';
-import KeyboardSpacer from 'react-native-keyboard-spacer'
+import { useHeaderHeight } from "@react-navigation/stack";
+// import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 import Icon from "react-native-vector-icons/FontAwesome";
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   Text,
   View,
@@ -35,6 +35,8 @@ import { onValue, push, remove, ref, update } from "firebase/database";
 //import Bonsai from "./Bonsai";
 import { useSelector, useDispatch } from "react-redux";
 import { launchCameraAsync } from "expo-image-picker";
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 const Dashboard = ({ navigation }) => {
   const data = [
@@ -77,14 +79,10 @@ const Dashboard = ({ navigation }) => {
       underlayColor={"#AAA"}
     >
       <View
-        style={{
-          flexDirection: "row",
-          paddingLeft: 20,
-          alignItems: "flex-start",
-        }}
+        style={DashboardStyle.list}
       >
-        <Text>{data.item.time}</Text>
-        <Text> {data.item.description}</Text>
+        <Text>{data.item.description}</Text>
+        <Text style={DashboardStyle.listTime}>{data.item.time}</Text>
       </View>
     </TouchableHighlight>
   );
@@ -136,8 +134,6 @@ const Dashboard = ({ navigation }) => {
     </View>
   );
 
- 
-
   const renderLabel = () => {
     if (value || isFocus) {
       return (
@@ -186,8 +182,6 @@ const Dashboard = ({ navigation }) => {
       //console.log(location);
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
-
-      
     } catch (error) {
       console.log("Error", error);
     }
@@ -299,143 +293,122 @@ const Dashboard = ({ navigation }) => {
   };
 
   return (
-
-    <>
-     
-   
-
-
-
-
-     <KeyboardAvoidingView
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={200}
-        style={{flex:1}}
-       
-        
-     >
-
-
-
-
-
-    
-
-      <View
-       
-        //DashboardStyle={DashboardStyle.container}
-       // contentContainerStyle={DashboardStyle.contentContainerStyle}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 50} 
+        style={{ flex: 1 }}
       >
+        <View
 
-{Platform.OS=="web" ? (
-      <>
-      { bonsaisKeys.map((key) => (
-              
-              <View style={DashboardStyle.taskDisplay} key={key}>
-                {console.log(bonsaisKeys.length)}
-                <Text key={key}>
-                  {tasks[key].time} {tasks[key].description}{" "}
-                </Text>
-                {bonsaisKeys[0] == key ? 
-                 (console.log("Hello edit",bonsaisKeys[0].key)) : (<TouchableOpacity
-                  onPress={async() => {
-                    setModalVisible(!modalVisible);
-                    updateKey(key);
-                    updateTime(tasks[key].time);
-                    updateTask(tasks[key].description)
-                    await handelMyLocation();
-                    
-                    
-                  }}
-                >
-                  <Icon name="edit" size={30} color="#900" />
-                </TouchableOpacity>) }
-                
-              </View>
-
-            ))}
-      </>
-    ):(<SwipeListView
-    style={{maxHeight:"75%"}}
-      horizontal={false}
-      nestedScrollEnabled={true}
-      data={checkData}
-      renderItem={dataRender}
-      renderHiddenItem={rightButtons}
-      //leftOpenValue={0}
-
-      rightOpenValue={-70}
-      previewRowKey={"0"}
-      previewOpenValue={-40}
-      previewOpenDelay={3000}
-      //onRowDidOpen={onRowDidOpen}
-    />)}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
+        //DashboardStyle={DashboardStyle.container}
+        // contentContainerStyle={DashboardStyle.contentContainerStyle}
         >
-          <View style={DashboardStyle.centeredView}>
-            <View style={DashboardStyle.modalView}>
-              <TextInput
-                label="update Task"
-                editable
-                multiline
-                numberOfLines={5}
-                //maxLength={}
-                value={updatedTask}
-                style={{
-                  width: Platform.OS === "web" ? 600 : 250,
-                  padding: 1,
-                  height: 300,
-                }}
-                onChangeText={(text) => {
-                  console.log("updatedTask", text);
-                  updateTask(text);
-                }}
-                // onSubmitEditing={onValue}
-              />
-              <View style={{ flexDirection: "row" }}>
-                <Pressable
-                  style={[
-                    DashboardStyle.button,
-                    DashboardStyle.buttonClose,
-                    { marginRight: 5 },
-                  ]}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    onPressEdit(currentKey, currentTime, updatedTask);
-                    updateTask("");
+          {Platform.OS == "web" ? (
+            <>
+              {bonsaisKeys.map((key) => (
+                <View style={DashboardStyle.taskDisplay} key={key}>
+                  {console.log(bonsaisKeys.length)}
+                  <Text key={key}>
+                    {tasks[key].time} {tasks[key].description}{" "}
+                  </Text>
+                  {bonsaisKeys[0] == key ? (
+                    console.log("Hello edit", bonsaisKeys[0].key)
+                  ) : (
+                    <TouchableOpacity
+                      onPress={async () => {
+                        setModalVisible(!modalVisible);
+                        updateKey(key);
+                        updateTime(tasks[key].time);
+                        updateTask(tasks[key].description);
+                        await handelMyLocation();
+                      }}
+                    >
+                      <Icon name="edit" size={30} color="#900" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ))}
+            </>
+          ) : (
+            <SwipeListView
+              style={{ maxHeight: "75%" }}
+              horizontal={false}
+              nestedScrollEnabled={true}
+              data={checkData}
+              renderItem={dataRender}
+              renderHiddenItem={rightButtons}
+              //leftOpenValue={0}
+
+              rightOpenValue={-70}
+              previewRowKey={"0"}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              //onRowDidOpen={onRowDidOpen}
+            />
+          )}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={DashboardStyle.centeredView}>
+              <View style={DashboardStyle.modalView}>
+                <TextInput
+                  label="update Task"
+                  editable
+                  multiline
+                  numberOfLines={5}
+                  //maxLength={}
+                  value={updatedTask}
+                  style={{
+                    width: Platform.OS === "web" ? 600 : 250,
+                    padding: 1,
+                    // height: 300,
                   }}
-                >
-                  <Text>Update</Text>
-                </Pressable>
-                <Pressable
-                  style={[
-                    DashboardStyle.button,
-                    DashboardStyle.buttonClose,
-                    { marginLeft: 5 },
-                  ]}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
+                  onChangeText={(text) => {
+                    // console.log("updatedTask", text);
+                    updateTask(text);
                   }}
-                >
-                  <Text>Cancel</Text>
-                </Pressable>
+                  // onSubmitEditing={onValue}
+                />
+                <View style={{ flexDirection: "row" }}>
+                  <Pressable
+                    style={[
+                      DashboardStyle.button,
+                      DashboardStyle.buttonClose,
+                      { marginRight: 5 },
+                    ]}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      onPressEdit(currentKey, currentTime, updatedTask);
+                      updateTask("");
+                    }}
+                  >
+                    <Text>Update</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      DashboardStyle.button,
+                      DashboardStyle.buttonClose,
+                      { marginLeft: 5 },
+                    ]}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Ionicons name="close-outline" size={18} color="#fff"/>
+                  </Pressable>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-        {/* <Stack m={4} spacing={2} divider={true}></Stack> */}
-       
-        
-       
-           <View 
-           style={DashboardStyle.container}>
+          </Modal>
+          {/* <Stack m={4} spacing={2} divider={true}></Stack> */}
+
+          <View style={DashboardStyle.inputWrap}>
             <TextInput
               label="New Task"
               editable
@@ -446,7 +419,7 @@ const Dashboard = ({ navigation }) => {
               }}
               //maxLength={}
               value={currentTask}
-              style={{ width: Platform.OS === "web" ? 700 : 350, padding: 1 }}
+              style={DashboardStyle.taskInput}
               onChangeText={async (text) => {
                 console.log("Task", text);
 
@@ -455,37 +428,15 @@ const Dashboard = ({ navigation }) => {
               }}
               onSubmitEditing={addNewBonsai}
             />
-            
-
-            <View>
-              <View style={{ marginTop: 5 }}>
-                <Button
-                  title="Add new task"
-                  onPress={() => {
-                    //handelMyLocation();
+                <TouchableOpacity style={DashboardStyle.submitBtn} disabled={currentTask == ""} onPress={() => {
                     addNewBonsai();
                     checkDataUpdate();
-                  }}
-                  color="green"
-                  disabled={currentTask == ""}
-                />
-              </View>
-              {/* <View style={{ marginTop: 5 }}>
-              <Button
-                title="Clear bonsais list"
-                onPress={clearBonsais}
-                color="red"
-              />
-            </View> */}
-            </View>
-            
-         
-       
-            </View>
-        
-      </View>
+                  }}>
+                  <Ionicons name="checkmark-outline" size={18} color="#fff"/>
+                </TouchableOpacity>
+          </View>
+        </View>
       </KeyboardAvoidingView>
-    </>
   );
 };
 // references:
