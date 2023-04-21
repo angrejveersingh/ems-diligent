@@ -9,6 +9,7 @@ const customizedMiddleware = getDefaultMiddleware({
 const initialState = {
   displayName : "",
   siteName:"",
+  token:"",
   isLocationEnabled:false,
   lat : 0,
   long: 0
@@ -34,6 +35,9 @@ export const emsSlice = createSlice({
       //console.log("location redux", action.payload);
       state.isLocationEnabled = action.payload;
     },
+    setToken:(state,action)=>{
+      state.token = action.payload;
+    },
     setLocation:(state, action)=>{
       console.log("Redux location",action.payload.coords );
       state.lat = action.payload.coords.latitude;
@@ -43,6 +47,6 @@ export const emsSlice = createSlice({
   },
 })
 
- export const {  setDisplayName, setSiteName, enableLocation, setLocation } = emsSlice.actions
+ export const {  setDisplayName, setSiteName, enableLocation, setLocation, setToken } = emsSlice.actions
 
 export default emsSlice.reducer
