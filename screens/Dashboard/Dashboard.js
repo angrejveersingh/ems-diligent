@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import * as Location from "expo-location";
-import { SwipeListView } from "react-native-swipe-list-view";
+import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 // import database from "@react-native-firebase/database";
 import DashboardStyle from "./DashboardStyles";
 import { useHeaderHeight } from "@react-navigation/stack";
@@ -70,10 +70,15 @@ const Dashboard = ({ navigation }) => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [firstTasks, setfirstTask] = useState("");
-  var checkData = [];
+  const [checkData, updateCheckData] = useState([]);
+  const [firstKey,updateFirstKey]= useState("");
 
   const dataRender = (data) => (
+    //console.log("check render data",data)
     <TouchableHighlight
+    disableRightSwipe={data.item.key == firstKey}
+    leftOpenValue={20 + Math.random() * 150}
+    rightOpenValue={-150} 
       onPress={() => console.log("You touched me")}
       style={DashboardStyle.rowFront}
       underlayColor={"#AAA"}
@@ -81,34 +86,38 @@ const Dashboard = ({ navigation }) => {
       <View
         style={DashboardStyle.list}
       >
-        <Text>{data.item.description}</Text>
+        <Text>{data.item.description}{console.log("Check data",data.item.key)}</Text>
         <Text style={DashboardStyle.listTime}>{data.item.time}</Text>
       </View>
     </TouchableHighlight>
   );
 
   const checkDataUpdate = () => {
+    var tempArray = [];
+    console.log("Check updatttt data",bonsaisKeys);
     bonsaisKeys.map((key) => {
-      checkData.push({
+      tempArray.push({
         key: key,
         time: tasks[key].time,
         description: tasks[key].description,
       });
     });
+    updateCheckData(tempArray);
+    console.log("Check updatttt data",checkData);
   };
 
-  useEffect(() => {
-    bonsaisKeys.map((key) => {
-      checkData.push({
-        key: key,
-        time: tasks[key].time,
-        description: tasks[key].description,
-      });
-    });
-    //console.log("Check data", checkData);
-  }, [bonsaisKeys]);
+  // useEffect(() => {
+  //   bonsaisKeys.map((key) => {
+  //     checkData.push({
+  //       key: key,
+  //       time: tasks[key].time,
+  //       description: tasks[key].description,
+  //     });
+  //   });
+  //   //console.log("Check data", checkData);
+  // }, []);
 
-  const rightButtons = (data) => (
+  const rightButtons = (data, rowMap, rowKey) => (
     <View style={DashboardStyle.rowBack}>
       {bonsaisKeys[0] == data.item.key ? (
         <></>
@@ -120,11 +129,14 @@ const Dashboard = ({ navigation }) => {
               DashboardStyle.backRightBtnRight,
             ]}
             onPress={async () => {
+              rowMap[data.item.key].closeRow();
               setModalVisible(!modalVisible);
               updateKey(data.item.key);
               updateTime(data.item.time);
               updateTask(data.item.description);
               await handelMyLocation();
+              //console.log(rowMap, rowKey);
+              
             }}
           >
             <Text style={DashboardStyle.backTextWhite}>Edit</Text>
@@ -221,7 +233,7 @@ const Dashboard = ({ navigation }) => {
     var year = new Date().getFullYear();
     var finalDates = date + "-" + month + "-" + year;
     const dbRefT = ref(db, `${siteName}/${finalDates}/DOR/${displayName}`);
-    console.log("Check Location", tasks);
+    //console.log("Check Location", tasks);
     var hours = new Date().getHours();
     var min = new Date().getMinutes();
     var finalTime = hours + ":" + min;
@@ -255,10 +267,21 @@ const Dashboard = ({ navigation }) => {
       console.log("Tasks", tasks == {});
       setBonsais(tasks);
       var checkKeys = Object.keys(tasks);
-      console.log("TASK LENGTH", checkKeys.length);
+      console.log("TASK LENGTH", bonsaisKeys);
+
       if (checkKeys.length == 0) {
         firstTask();
       }
+      var tempArray = [];
+   updateFirstKey(checkKeys[0]);
+    checkKeys.map((key) => {
+      tempArray.push({
+        key: key,
+        time: tasks[key].time,
+        description: tasks[key].description,
+      });
+    });
+    updateCheckData(tempArray);
     });
   }, [values, finalDate, displayName, isLocationEnabled]);
 
@@ -268,6 +291,7 @@ const Dashboard = ({ navigation }) => {
     var min = new Date().getMinutes();
     var finalTime = hours + ":" + min;
     console.log("currentBonsai", finalTime);
+    
 
     if (isLocationEnabled) {
       setTimeout(() => {
@@ -280,6 +304,9 @@ const Dashboard = ({ navigation }) => {
           description: currentTask,
         });
         setCurrentTask("");
+      
+    
+   
       }, 300);
     } else {
       alert(
