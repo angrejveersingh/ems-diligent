@@ -66,7 +66,7 @@ const MyStack = () => {
                     headerShown: false,
                     tabBarIcon: ({ color, size, backgroundColor }) => (<Entypo name="home" size={30} color={color} backgroundColor={"black"} />)
                 }} />
-            <Tab.Screen name="Settings" component={Settings}
+            <Tab.Screen name="Account" component={SettingScreen}
                 options={{
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (<EvilIcons name="gear" size={30} color={color} />)
@@ -195,6 +195,44 @@ function HomeComponents(){
           }
        }
       />
+    </Stack.Navigator>
+  );
+};
+
+function SettingScreen(){
+  const Stack = createStackNavigator();
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  return (
+
+
+    <Stack.Navigator
+      initialRouteName="Settings"
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerStyle: {
+          backgroundColor: "#000",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+      }}
+    >
+
+<Stack.Screen 
+        name="Settings" 
+        component={Settings} 
+        options={{ 
+          headerShown: true,
+          title: "Account", 
+          gestureEnabled: false 
+        }}
+      />       
+      
+      
+      
     </Stack.Navigator>
   );
 };

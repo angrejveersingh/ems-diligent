@@ -4,17 +4,21 @@ import * as Location from "expo-location";
 import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 // import database from "@react-native-firebase/database";
 import DashboardStyle from "./DashboardStyles";
+
 import { useHeaderHeight } from "@react-navigation/stack";
 // import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 import Icon from "react-native-vector-icons/FontAwesome";
+//import Modal from 'react-native-modal';
+
 // import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   Text,
   View,
   Button,
-  Modal,
+   Modal,
   ScrollView,
+  Appearance,
   Platform,
   Pressable,
   TouchableHighlight,
@@ -73,10 +77,37 @@ const Dashboard = ({ navigation }) => {
   const [checkData, updateCheckData] = useState([]);
   const [firstKey,updateFirstKey]= useState("");
 
-  const dataRender = (data) => (
+  const dataRender = (data, rowMap) => (
     //console.log("check render data",data)
+    <SwipeRow
+    disableLeftSwipe={data.item.key == firstKey}
+    disableRightSwipe={true}
+
+    rightOpenValue={-70}>
+
+
+         <TouchableOpacity
+            style={[
+              DashboardStyle.backRightBtn,
+              DashboardStyle.backRightBtnRight,
+            ]}
+            onPress={async () => {
+              rowMap[data.item.key].closeRow();
+              setModalVisible(!modalVisible);
+              updateKey(data.item.key);
+              updateTime(data.item.time);
+              updateTask(data.item.description);
+              await handelMyLocation();
+              //console.log(rowMap, rowKey);
+              
+            }}
+          >
+            <Text style={DashboardStyle.backTextWhite}>Edit</Text>
+          </TouchableOpacity>
+
+
     <TouchableHighlight
-    disableRightSwipe={data.item.key == firstKey}
+   
     leftOpenValue={20 + Math.random() * 150}
     rightOpenValue={-150} 
       onPress={() => console.log("You touched me")}
@@ -86,11 +117,25 @@ const Dashboard = ({ navigation }) => {
       <View
         style={DashboardStyle.list}
       >
-        <Text>{data.item.description}{console.log("Check data",data.item.key)}</Text>
+        <Text>{data.item.description}</Text>
         <Text style={DashboardStyle.listTime}>{data.item.time}</Text>
       </View>
     </TouchableHighlight>
+    </SwipeRow>
   );
+ 
+  // const onRowDidOpen = (data, rowMap)=>{
+  //   if (data.item.key == firstKey){
+  //     rowMap[data.item.key].closeRow();
+  //   }
+  // };
+
+  const onRowDidOpen = (rowKey, rowMap) => {
+    console.log('This row opened', rowKey);
+    if (rowKey == firstKey){
+          rowMap[rowKey].closeRow();
+        }
+};
 
   const checkDataUpdate = () => {
     var tempArray = [];
@@ -146,16 +191,7 @@ const Dashboard = ({ navigation }) => {
     </View>
   );
 
-  const renderLabel = () => {
-    if (value || isFocus) {
-      return (
-        <Text style={[DashboardStyle.label, isFocus && { color: "blue" }]}>
-          Choose Location
-        </Text>
-      );
-    }
-    return null;
-  };
+  
 
   const handelMyLocation = async () => {
     try {
@@ -260,14 +296,16 @@ const Dashboard = ({ navigation }) => {
     // while (!isLocationEnabled) {
     //   alert("Please allow location from the device settings");
     // }
+
     return onValue(dbRef, (querySnapshot) => {
-      console.log("querySnapshot", dbRef);
+      console.log("Check Apperance", Appearance.getColorScheme());
+      //console.log("querySnapshot", dbRef);
       let data = querySnapshot.val() || {};
       let tasks = { ...data };
       console.log("Tasks", tasks == {});
       setBonsais(tasks);
       var checkKeys = Object.keys(tasks);
-      console.log("TASK LENGTH", bonsaisKeys);
+     // console.log("TASK LENGTH", bonsaisKeys);
 
       if (checkKeys.length == 0) {
         firstTask();
@@ -322,7 +360,7 @@ const Dashboard = ({ navigation }) => {
   return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 50} 
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 100} 
         style={{ flex: 1 }}
       >
         <View
@@ -358,27 +396,28 @@ const Dashboard = ({ navigation }) => {
             </>
           ) : (
             <SwipeListView
-              style={{ maxHeight: "75%" }}
+              style={{ height: "88%" }}
               horizontal={false}
               nestedScrollEnabled={true}
               data={checkData}
               renderItem={dataRender}
-              renderHiddenItem={rightButtons}
-              //leftOpenValue={0}
+              // renderHiddenItem={rightButtons}
+              // //leftOpenValue={0}
 
-              rightOpenValue={-70}
-              previewRowKey={"0"}
-              previewOpenValue={-40}
-              previewOpenDelay={3000}
-              //onRowDidOpen={onRowDidOpen}
+              // rightOpenValue={-70}
+              // previewRowKey={"0"}
+              // previewOpenValue={-40}
+              // previewOpenDelay={3000}
+              onRowDidOpen={onRowDidOpen}
             />
           )}
           <Modal
             animationType="slide"
-            transparent={true}
+           //transparent={true}
+           presentationStyle="formSheet"
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
+              //Alert.alert("Modal has been closed.");
               setModalVisible(!modalVisible);
             }}
           >
