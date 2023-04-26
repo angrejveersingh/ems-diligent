@@ -6,12 +6,11 @@ import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 import DashboardStyle from "./DashboardStyles";
 
 import { useHeaderHeight } from "@react-navigation/stack";
-// import KeyboardSpacer from 'react-native-keyboard-spacer'
+
 
 import Icon from "react-native-vector-icons/FontAwesome";
-//import Modal from 'react-native-modal';
 
-// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 import {
   Text,
   View,
