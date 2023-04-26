@@ -31,17 +31,21 @@ const Dashstyle = StyleSheet.create({
     },
     centeredView: {
       flex: 1,
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
       alignItems: 'center',
-      marginTop: 22,
+     // marginTop: 22,
+     margin: 0,
+      width:"100%"
     },
     modalView: {
       margin: 20,
-      // height:Platform.OS === "web" ? 500 : 400,
-      width:Platform.OS === "web" ? 700 : 300,
+       height:800,
+      width:400,
       backgroundColor: 'white',
-      borderRadius: 20,
+      borderTopStartRadius: 20,
+      borderTopEndRadius:20,
       padding: 35,
+      marginTop:90,
       alignItems: 'center',
       shadowColor: '#000',
       shadowOffset: {
